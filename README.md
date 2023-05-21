@@ -10,7 +10,7 @@ Note :-
 
 Instructions:
 
-1) First step, is to run generate_token.py script. After running the script, you will get login URL, just copy and paste it in your chrome, preferably in Incognito mode.
+1) First step, is to run Login_Kite.py script. After running the script, you will get login URL, just copy and paste it in your chrome, preferably in Incognito mode.
 2) After hitting enter, there you will get value of request token, copy it and paste it in req_token variable in an Input_File.txt and save it.
 3) After this, just comment the line no. 23(print(kite.login_url())) and uncomment the line of gen_ssn,acc_tkn,print(acc_tkn) from the script.
 4) Again, run the code, see the output, you will get access_token for the day. Copy it, paste it to access_token variable in an Input_File.txt and save it.

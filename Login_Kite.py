@@ -20,10 +20,10 @@ req_tkn = variables['req_tkn']
 kite = KiteConnect(api_key=key)
 
 #Use below line to generate request token
-# print(kite.login_url())
+print(kite.login_url())
 
 #Use below line to generate access_token
-gen_ssn = kite.generate_session(request_token=req_tkn, api_secret=secret)
-acc_tkn = gen_ssn['access_token']
-print(acc_tkn)
+# gen_ssn = kite.generate_session(request_token=req_tkn, api_secret=secret)
+# acc_tkn = gen_ssn['access_token']
+# print(acc_tkn)
 #

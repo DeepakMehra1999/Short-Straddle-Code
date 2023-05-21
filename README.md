@@ -1,6 +1,6 @@
 # Short-Straddle-Code
-short straddle is an options trading strategy where trader sells both a call option and a put option with the same strike price and expiration date. 
-
+Short Straddle is an options trading strategy where trader sells both a call option and a put option with the same strike price and expiration date. 
+Here I am using Zerodha Kite Connect to execute strategy. The idea behind the strategy to execute straddle at 9:30 and place stoploss above 25% of selling prices. If any of the stoploss hits(assume it hits of call option) than it modifies the stoploss of put option at cost(means at the selling price). For squareoff the position, it checks if premium decays by 80% or if time is 15:15 noon, it squareoff the open positions.
 
 Note :- 
 1) Overall there are 2 Python Script and 1 text file named as Input_File.txt

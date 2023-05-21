@@ -105,10 +105,10 @@ if __name__ == '__main__':
                 symbol_ce = get_symbols(next_thursday_expiry.date(), 'NIFTY', atm_strike, 'CE')
                 symbol_pe = get_symbols(next_thursday_expiry.date(), 'NIFTY', atm_strike, 'PE')
 
-                order_id_buying_ce = place_order(symbol_ce, 0, 50, kite.TRANSACTION_TYPE_BUY, KiteConnect.EXCHANGE_NFO,
+                order_id_selling_ce = place_order(symbol_ce, 0, 50, kite.TRANSACTION_TYPE_BUY, KiteConnect.EXCHANGE_NFO,
                                                  KiteConnect.PRODUCT_MIS,
                                                  KiteConnect.ORDER_TYPE_MARKET,None)
-                order_id_buying_pe = place_order(symbol_pe, 0, 50, kite.TRANSACTION_TYPE_BUY, KiteConnect.EXCHANGE_NFO,
+                order_id_selling_pe = place_order(symbol_pe, 0, 50, kite.TRANSACTION_TYPE_BUY, KiteConnect.EXCHANGE_NFO,
                                                  KiteConnect.PRODUCT_MIS,
                                                  KiteConnect.ORDER_TYPE_MARKET,None)
                 # Define tick size
@@ -117,29 +117,26 @@ if __name__ == '__main__':
                 # check orderbook
                 orderbook = kite.orders()
                 for order in orderbook:
-                    if order['order_id'] == order_id_buying_ce:
+                    if order['order_id'] == order_id_selling_ce:
                         # Calculate selling price of CE option
-                        buying_price_ce = (order['average_price'] / 100) * 100
+                        selling_price_ce = (order['average_price'] / 100) * 100
                         # Calculate stop-loss price of CE option
-                        pre_stop_loss_ce = buying_price_ce * 0.9
+                        pre_stop_loss_ce = buying_price_ce * 1.25
                         stop_loss_ce = round(pre_stop_loss_ce,1)
-                        print(stop_loss_ce)
-                    elif order['order_id'] == order_id_buying_pe:
+                    elif order['order_id'] == order_id_selling_pe:
                         # Calculate selling price of PE option
-                        buying_price_pe = (order['average_price'] / 100) * 100
+                        selling_price_pe = (order['average_price'] / 100) * 100
                         # Calculate stop-loss price of PE option
-                        pre_stop_loss_pe = buying_price_pe * 0.9
+                        pre_stop_loss_pe = selling_price_pe * 1.25
                         stop_loss_pe = round(pre_stop_loss_pe, 1)
-                        print(stop_loss_pe)
 
-                stop_loss_order_id_ce = place_order(symbol_ce, stop_loss_ce, 50, kite.TRANSACTION_TYPE_SELL, KiteConnect.EXCHANGE_NFO,
+                stop_loss_order_id_ce = place_order(symbol_ce, stop_loss_ce, 50, kite.TRANSACTION_TYPE_BUY, KiteConnect.EXCHANGE_NFO,
                                                  KiteConnect.PRODUCT_MIS,
                                                  KiteConnect.ORDER_TYPE_SL,stop_loss_ce)
-                print(stop_loss_order_id_ce)
-                stop_loss_order_id_pe = place_order(symbol_pe, stop_loss_pe, 50, kite.TRANSACTION_TYPE_SELL, KiteConnect.EXCHANGE_NFO,
+                stop_loss_order_id_pe = place_order(symbol_pe, stop_loss_pe, 50, kite.TRANSACTION_TYPE_BUY, KiteConnect.EXCHANGE_NFO,
                                                  KiteConnect.PRODUCT_MIS,
                                                  KiteConnect.ORDER_TYPE_SL,stop_loss_pe)
-                print(stop_loss_order_id_pe)
+                
 
 
                 while True:
@@ -155,9 +152,9 @@ if __name__ == '__main__':
                         if not stop_loss_order_modified_pe:
                             modified_order_pe = kite.modify_order(variety=kite.VARIETY_REGULAR,
                                               order_id=stop_loss_order_id_pe,
-                                              trigger_price=buying_price_pe,
-                                              price=buying_price_pe)
-                            time.sleep(10)
+                                              trigger_price=selling_price_pe,
+                                              price=selling_price_pe)
+                            time.sleep(2)
                         # Extract the order ID from the modified order dictionary
                             if isinstance(modified_order_pe, dict):
                                 modified_order_id_pe = modified_order_pe.get("order_id")
@@ -171,10 +168,10 @@ if __name__ == '__main__':
                                     if id_new_stop_loss_order_pe and id_new_stop_loss_order_pe['status'] == 'COMPLETE':
                                         break
 
-                                    if current_price_pe >= buying_price_pe * 1.15 or now == exit_time:
+                                    if current_price_pe <= selling_price_pe * 0.8 or now == exit_time:
                                         for order in orderbook:
-                                            if order['order_id'] == order_id_buying_pe:
-                                                place_order(symbol_pe, 0, 50, kite.TRANSACTION_TYPE_SELL,
+                                            if order['order_id'] == order_id_selling_pe:
+                                                place_order(symbol_pe, 0, 50, kite.TRANSACTION_TYPE_BUY,
                                                             KiteConnect.EXCHANGE_NFO,
                                                             KiteConnect.PRODUCT_MIS,
                                                             KiteConnect.ORDER_TYPE_MARKET, None)
@@ -184,9 +181,9 @@ if __name__ == '__main__':
                         if not stop_loss_order_modified_ce:
                             modified_order_ce = kite.modify_order(variety=kite.VARIETY_REGULAR,
                                               order_id=stop_loss_order_id_ce,
-                                              trigger_price=buying_price_ce,
-                                              price=buying_price_ce)
-                            time.sleep(10)
+                                              trigger_price=selling_price_ce,
+                                              price=selling_price_ce)
+                            time.sleep(2)
                         # Extract the order ID from the modified order dictionary
                             if isinstance(modified_order_ce, dict):
                                 modified_order_id_ce = modified_order_ce.get("order_id")
@@ -199,10 +196,10 @@ if __name__ == '__main__':
                                         None)
                                     if id_new_stop_loss_order_ce and id_new_stop_loss_order_ce['status'] == 'COMPLETE':
                                         break
-                                    if current_price_ce >= buying_price_ce * 1.15 or now == exit_time:
+                                    if current_price_ce <= selling_price_ce * 0.08 or now == exit_time:
                                         for order in orderbook:
-                                            if order['order_id'] == order_id_buying_ce:
-                                                place_order(symbol_ce, 0, 50, kite.TRANSACTION_TYPE_SELL,
+                                            if order['order_id'] == order_id_selling_ce:
+                                                place_order(symbol_ce, 0, 50, kite.TRANSACTION_TYPE_BUY,
                                                             KiteConnect.EXCHANGE_NFO,
                                                             KiteConnect.PRODUCT_MIS,
                                                             KiteConnect.ORDER_TYPE_MARKET, None)

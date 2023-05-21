@@ -1,4 +1,4 @@
-key=6djfqjko711xe0b2
-secret=xafggreuthwffurikg1c1pkqm3955sz2
-req_tkn=K52ACnJAdUcKR2Y6R7VQNA4ZLINvo753
-access_token=R2dVrDPSbWWhKI0kB9PDk7746Hvj4RdT
+key=
+secret=
+req_tkn=
+access_token=
